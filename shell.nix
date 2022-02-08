@@ -18,6 +18,7 @@ mkShell {
     figlet
     nixUnstable
     testScript
+    tree
   ];
 
   NIX_ENFORCE_PURITY = true;
