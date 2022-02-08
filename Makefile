@@ -1,6 +1,10 @@
 # Default shell
 SHELL := bash
 
+# https://stackoverflow.com/a/26339924/
+# How do you get the list of targets in a makefile?
+list:
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
 
 default: all
 
@@ -31,6 +35,11 @@ amazon-image:
 patch-nixconf-kvm:
 	file="$$HOME/.config/nix/nix.conf" ;\
 	s="system-features = kvm" ;\
+	grep -Fxqe "$$s" < "$$file" || printf "%s\n" "$$s" >> "$$file"
+
+patch-nixconf-flakes:
+	file="$$HOME/.config/nix/nix.conf" ;\
+	s="experimental-features = nix-command flakes" ;\
 	grep -Fxqe "$$s" < "$$file" || printf "%s\n" "$$s" >> "$$file"
 
 # Boots the qcow2 image into a kvm virtual machine

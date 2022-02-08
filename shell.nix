@@ -16,6 +16,7 @@ mkShell {
 
   buildInputs = [
     figlet
+    nixUnstable
     testScript
   ];
 
