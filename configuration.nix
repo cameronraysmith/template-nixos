@@ -17,9 +17,12 @@
     curl
     gitAndTools.gitFull
     htop
+    singularity
     sudo
     tmux
     vim
+    wget
+    zsh
   ];
 
   security.sudo.enable = true;
