@@ -45,10 +45,15 @@ patch-nixconf-flakes:
 GCP_REGION = us-east1
 GCP_ZONE = $(GCP_REGION)-c
 GCP_PROJECT = core-246800
+GCP_MACHINE_TYPE = n1-standard-4
+DISK_SIZE = 300
 STORAGE_BUCKET_IMAGES = $(GCP_PROJECT)-nixos-images
-IMAGE_NAME = nixos-image-2205pre351617942b0817e89-x8664-linux
-IMAGE_FILENAME = nixos-image-22.05pre351617.942b0817e89-x86_64-linux.raw.tar.gz
-IMAGE_INSTANCE_NAME = nixos-instance-01
+IMAGE_NAME = nixos-image-2205pre379293f4dfed73ee8-x8664-linux
+IMAGE_FILENAME = nixos-image-22.05pre379293.f4dfed73ee8-x86_64-linux.raw.tar.gz
+IMAGE_INSTANCE_NAME = nixos-instance-$(shell date +"%Y-%m-%d")
+
+print_make_vars:
+	$(info    IMAGE_INSTANCE_NAME is $(IMAGE_INSTANCE_NAME))
 
 create_image:
 	gcloud compute images create $(IMAGE_NAME) \
@@ -63,9 +68,9 @@ create_image_instance:
   --machine-type=$(GCP_MACHINE_TYPE) \
   --metadata=enable-oslogin=TRUE \
   --no-address \
-  --create-disk=auto-delete=yes,boot=yes,device-name=nixos-instance-01,image=projects/$(GCP_PROJECT)/global/images/$(IMAGE_NAME),mode=rw,size=200,type=projects/$(GCP_PROJECT)/zones/$(GCP_ZONE)/diskTypes/pd-balanced \
-  --reservation-affinity=any \
-  --preemptible
+  --create-disk=auto-delete=yes,boot=yes,device-name=nixos-instance-01,image=projects/$(GCP_PROJECT)/global/images/$(IMAGE_NAME),mode=rw,size=$(DISK_SIZE),type=projects/$(GCP_PROJECT)/zones/$(GCP_ZONE)/diskTypes/pd-balanced \
+  --reservation-affinity=any
+  # --preemptible
   # --network-interface=network-tier=PREMIUM,subnet=default \ #
   # --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \ #
   # --maintenance-policy=MIGRATE \ #
